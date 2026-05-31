@@ -46,7 +46,24 @@ async def predict_kcal(request: Request):
         headers.pop("host", None)
         body = await request.body()
         response = await client.post(url, headers=headers, content=body)
-        return Response(content=response.content, status_code=response.status_code, headers=dict(response.headers))
+        excluded_headers = {"content-encoding", "transfer-encoding", "content-length", "connection"}
+        response_headers = {k: v for k, v in response.headers.items() if k.lower() not in excluded_headers}
+        return Response(content=response.content, status_code=response.status_code, headers=response_headers)
+
+
+@router.api_route("/kcal/analyze-image", methods=["POST"])
+async def analyze_image_kcal(request: Request):
+    # Multipart/form-data : on relaie le body brut + content-type original (avec boundary)
+    # httpx ne doit PAS re-parser le multipart, d'où content= au lieu de files=
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        url = f"{KCAL_SERVICE_URL}/analyze-image"
+        headers = dict(request.headers)
+        headers.pop("host", None)
+        body = await request.body()
+        response = await client.post(url, headers=headers, content=body)
+        excluded_headers = {"content-encoding", "transfer-encoding", "content-length", "connection"}
+        response_headers = {k: v for k, v in response.headers.items() if k.lower() not in excluded_headers}
+        return Response(content=response.content, status_code=response.status_code, headers=response_headers)
 
 
 @router.api_route("/meal", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
