@@ -3,4 +3,4 @@ uvicorn
 httpx
 pytest
 pytest-asyncio
-pyctuator
+prometheus-fastapi-instrumentator
