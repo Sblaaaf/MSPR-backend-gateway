@@ -2,8 +2,8 @@
 Tests for the API Gateway proxy routes.
 All upstream services are mocked with httpx.
 """
-import sys
 import json
+import sys
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -16,7 +16,7 @@ from main import app
 client = TestClient(app)
 
 
-def _mock_upstream(status_code: int = 200, body: dict = None):
+def _mock_upstream(status_code: int = 200, body: dict | None = None):
     """Return a fake httpx.Response-like mock."""
     resp = MagicMock()
     resp.status_code = status_code

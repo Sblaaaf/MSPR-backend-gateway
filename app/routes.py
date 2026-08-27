@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Request, Response
-import httpx
 import os
+
+import httpx
+from fastapi import APIRouter, Request, Response
 
 router = APIRouter()
 
