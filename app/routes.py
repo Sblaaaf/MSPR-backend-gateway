@@ -10,6 +10,7 @@ MEAL_SERVICE_URL  = os.getenv("MEAL_SERVICE_URL",  "http://meal:8003")
 AUTH_SERVICE_URL  = os.getenv("AUTH_SERVICE_URL",  "http://auth:8004")
 ETL_SERVICE_URL   = os.getenv("ETL_SERVICE_URL",   "http://etl:8002")
 ADMIN_SERVICE_URL = os.getenv("ADMIN_SERVICE_URL", "http://admin:8005")
+SOCIAL_SERVICE_URL = os.getenv("SOCIAL_SERVICE_URL", "http://social:8007")
 
 
 async def proxy_request(base_url: str, request: Request, strip_prefix: str = ""):
@@ -105,3 +106,13 @@ async def admin_root(request: Request):
 @router.api_route("/admin/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 async def admin_proxy(path: str, request: Request):
     return await proxy_request(ADMIN_SERVICE_URL, request, strip_prefix="/admin")
+
+
+@router.api_route("/social", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+async def social_root(request: Request):
+    return await proxy_request(SOCIAL_SERVICE_URL, request, strip_prefix="/social")
+
+
+@router.api_route("/social/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+async def social_proxy(path: str, request: Request):
+    return await proxy_request(SOCIAL_SERVICE_URL, request, strip_prefix="/social")

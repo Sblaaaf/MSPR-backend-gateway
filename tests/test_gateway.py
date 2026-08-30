@@ -197,3 +197,33 @@ def test_admin_proxy_get():
         resp = client.get("/admin/users")
 
     assert resp.status_code == 200
+
+
+# ---------------------------------------------------------------------------
+# /social/{path}  →  social:8007
+# ---------------------------------------------------------------------------
+
+def test_social_proxy_get():
+    upstream = _mock_upstream(200, [{"id": 1, "content": "Hello"}])
+
+    with patch("app.routes.httpx.AsyncClient") as mock_cls:
+        mock_http = AsyncMock()
+        mock_http.request.return_value = upstream
+        mock_cls.return_value.__aenter__.return_value = mock_http
+
+        resp = client.get("/social/posts")
+
+    assert resp.status_code == 200
+
+
+def test_social_proxy_post():
+    upstream = _mock_upstream(201, {"id": 1, "created_at": "2026-08-30T12:00:00"})
+
+    with patch("app.routes.httpx.AsyncClient") as mock_cls:
+        mock_http = AsyncMock()
+        mock_http.request.return_value = upstream
+        mock_cls.return_value.__aenter__.return_value = mock_http
+
+        resp = client.post("/social/posts", json={"user_id": 1, "user_name": "Camille", "content": "Hello"})
+
+    assert resp.status_code == 201
